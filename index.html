@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>HTML5 and canvas</title>
+	<link rel="stylesheet" href="">
+	<!-- <meta http-equiv="refresh" content="1"> -->
+</head>
+<body>
+	<h4>Amazed face!</h4>
+	<h6>Face is watching at your mouse pointer...</h6>
+	<canvas id="myCanvas" width="300" height="300">hola bello</canvas>
+	<aside>
+		<button onclick="change_size(20)">+</button>
+		<button onclick="change_size(-20)">-</button>
+	</aside>
+	<h4>How to do a circle eye-looking like, with Vectors</h4>
+	<img src="img0.png" alt="explain">
+	<footer>
+		By Alvaro Bolaños Rodriguez
+	</footer>
+	<script>
+	
+	// first draw
+	draw();
+
+	function draw(){
+		// set the canvas variables
+		var c = document.getElementById("myCanvas");
+		var x = c.getAttribute('width');
+		var y = c.getAttribute('height');
+		var pi = Math.PI;
+		var ctx=c.getContext("2d");
+		// fill the background
+		var grd=ctx.createLinearGradient(0,0,x,y);
+		grd.addColorStop(0,"blue");
+		grd.addColorStop(1,"white");
+		ctx.fillStyle=grd;
+		ctx.fillRect(0,0,x,y);
+
+		// Draw the face and paint it	
+		ctx.beginPath();
+	 	ctx.arc(x/2, y/2, x/2, 0 ,2*pi);
+	 	ctx.arc(x/2, y/2, x/2, 0 ,2*pi);
+	 	ctx.stroke();
+	 	ctx.fillStyle="#FFa709";
+	 	ctx.fill();
+		// the mouth
+		ctx.beginPath();
+		ctx.arc(x/2, y/2+y/5, x/7, 0, 2*pi);
+		ctx.fillStyle="#FF0000";
+		ctx.fill();
+		ctx.stroke();
+		//left - eye
+		ctx.beginPath();
+		ctx.arc(x/2-x/5, y/2-y/5, x/10, 0, 2*pi);
+		ctx.fillStyle="#FFFFFF";
+		ctx.fill();
+		ctx.stroke();
+		// right - eye
+		ctx.beginPath();
+		ctx.arc(x/2+x/5, y/2-y/5, x/10, 0, 2*pi);
+		ctx.fillStyle="#FFFFFF";
+		ctx.fill();
+		ctx.stroke();
+
+	}
+	
+	 // this function will draw the pupils
+	function drawCircle(canvas, mousePos, circle){
+      	var context = canvas.getContext('2d');
+      	var size = canvas.width / 30;
+      	// get direction of mouse and 'move' the circle towards it 
+      	var a = mousePos.x;
+      	var b = mousePos.y;
+      	var x = circle.x;
+      	var y = circle.y;
+      	// constant which reduces the direction vector down to 10%
+      	var r = 0.1;
+      	// direction vector between the current pos of circle and
+      	// the mouse
+      	var dir = {
+      		x: r*(mousePos.x - x),
+      		y: r*(mousePos.y - y)
+      	};
+      	// draw the circle
+      	context.beginPath();
+		context.arc(x + dir.x, y + dir.y, size, 0, 2*pi);
+		context.fillStyle="#000000";
+		context.fill();
+      }
+      // get the position values of the mouse inside the canvas frame
+      function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+          x: evt.clientX - rect.left,
+          y: evt.clientY - rect.top
+        };
+      }
+      // change the the size of the canvas square
+      function change_size(val){
+		var canvas = document.getElementById("myCanvas");
+		canvas.width += val;
+		canvas.height += val;
+		setEyeL();
+		setEyeR();
+		draw();
+	}
+	
+      var canvas = document.getElementById('myCanvas');
+      var context = canvas.getContext('2d');
+	  var pi = Math.PI;
+	  
+	  // initial of position of eyes
+	  function setEyeL(){
+	  	eyeL = {
+	  		x: canvas.width / 2 - canvas.width / 5,
+	  		y: canvas.height / 2 - canvas.height / 5
+	  	};
+	  }
+	  function setEyeR(){
+	  	eyeR = {
+	  		x: canvas.width / 2 + canvas.width / 5,
+	  		y: canvas.height / 2 - canvas.height / 5
+	  	};
+	  }
+	  // set coordinates of eyes
+	  var eyeL, eyeR;
+	  setEyeL();
+	  setEyeR();
+	  
+	  // all these functions inside this event listener are called all
+	  // the time the mouse is moving across the canvas surface
+      canvas.addEventListener('mousemove', function(evt) {
+        var mousePos = getMousePos(canvas, evt);
+        // draw face
+      	draw();
+        drawCircle(canvas, mousePos, eyeR);
+        drawCircle(canvas, mousePos, eyeL);
+        
+      }, false);
+
+	
+    
+	  
+	</script>
+</body>
+</html>
